@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vitex Bank</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="toasts" class="toasts"></div>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M3 11.5 21 3l-8.5 18-2.2-7.3z"/></symbol>
+    <symbol id="i-cash" viewBox="0 0 24 24"><path d="M2 6h20v12H2zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M8 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 20c0-3 3-5 6-5s6 2 6 5H2zm14-5c2.5 0 6 1.5 6 5h-4.5c0-2-1-3.6-2.5-4.6.3 0 .7-.1 1-.1z"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-4 0-8 2-8 5v3h16v-3c0-3-4-5-8-5z"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3.5 9.4 8 11 4.5-1.6 8-6 8-11V5z"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24"><path d="M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h5v-2H5V5h5zm5.5 4.5L13 10h7v4h-7l2.5 2.5L14 18l-6-6 6-6z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z"/></symbol>
+  </svg>
+
+  <!-- Auth -->
+  <div id="auth-view" class="auth">
+    <div class="auth-hero">
+      <div class="hero-inner">
+        <div class="logo"><svg><use href="#i-shield"/></svg><span>Vitex<strong>Bank</strong></span></div>
+        <h1>Banking that just works.</h1>
+        <p>Manage accounts, move money, track every transaction, and stay in control - all in one place.</p>
+        <ul class="hero-list">
+          <li>Instant transfers between accounts</li>
+          <li>Full transaction ledger &amp; statements</li>
+          <li>Saved beneficiaries and secure PIN</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="auth-card">
+      <div class="tabs">
+        <button class="tab active" data-auth-tab="login">Sign in</button>
+        <button class="tab" data-auth-tab="register">Create account</button>
+      </div>
+
+      <form id="login-form" class="auth-form">
+        <label>Username<input type="text" name="name" placeholder="Your username" required /></label>
+        <label>Password<input type="password" name="password" placeholder="Your password" required /></label>
+        <label>Role
+          <select name="role">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+        </label>
+        <button type="submit" class="btn primary">Sign in</button>
+      </form>
+
+      <form id="register-form" class="auth-form hidden">
+        <div class="grid-2">
+          <label>Username<input type="text" name="name" placeholder="min 4 characters" required /></label>
+          <label>Email (optional)<input type="email" name="email" placeholder="you@email.com" /></label>
+        </div>
+        <div class="grid-2">
+          <label>11-digit phone number<input type="tel" name="phone" inputmode="numeric" maxlength="11" minlength="11" pattern="\d{11}" placeholder="e.g. 08012345678" required /></label>
+          <label>Role
+            <select name="role">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </label>
+        </div>
+        <div class="grid-2">
+          <label>Password<input type="password" name="password" placeholder="min 6 characters" required /></label>
+          <label>Transaction PIN (optional)<input type="password" name="pin" inputmode="numeric" maxlength="4" placeholder="4 digits" /></label>
+        </div>
+        <small class="hint">Your account number is your phone number without its first digit.</small>
+        <button type="submit" class="btn primary">Create account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- App -->
+  <div id="app-view" class="app hidden">
+    <aside class="sidebar">
+      <div class="logo"><svg><use href="#i-shield"/></svg><span>Bank<strong>Backy</strong></span></div>
+      <nav class="nav">
+        <button class="nav-item active" data-view="dashboard"><svg><use href="#i-home"/></svg>Dashboard</button>
+        <button class="nav-item" data-view="transfer"><svg><use href="#i-send"/></svg>Transfer</button>
+        <button class="nav-item" data-view="cash"><svg><use href="#i-cash"/></svg>Deposit / Withdraw</button>
+        <button class="nav-item" data-view="transactions"><svg><use href="#i-list"/></svg>Transactions</button>
+        <button class="nav-item" data-view="beneficiaries"><svg><use href="#i-users"/></svg>Beneficiaries</button>
+        <button class="nav-item" data-view="profile"><svg><use href="#i-user"/></svg>Profile</button>
+        <button class="nav-item admin-only hidden" data-view="admin"><svg><use href="#i-shield"/></svg>Admin</button>
+      </nav>
+      <div class="sidebar-foot">
+        <div class="me">
+          <div class="avatar" id="me-avatar">?</div>
+          <div>
+            <div class="me-name" id="me-name">-</div>
+            <div class="me-role" id="me-role">-</div>
+          </div>
+        </div>
+        <button class="btn ghost small" id="logout-btn"><svg><use href="#i-logout"/></svg>Sign out</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <h1 id="page-title">Dashboard</h1>
+        <div class="balance-pill" id="balance-pill">--</div>
+      </header>
+
+      <section id="view-dashboard" class="view active">
+        <div class="cards">
+          <div class="card balance-card">
+            <div class="label">Available balance</div>
+            <div class="value" id="dash-balance">--</div>
+            <div class="meta"><span id="dash-acc">--</span> &middot; <span id="dash-type">--</span></div>
+            <span class="status-badge" id="dash-status">--</span>
+          </div>
+          <div class="card stat"><div class="label">Money in</div><div class="value in" id="dash-in">--</div></div>
+          <div class="card stat"><div class="label">Money out</div><div class="value out" id="dash-out">--</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <h2>Recent activity</h2>
+            <button class="link" data-goto="transactions">View all</button>
+          </div>
+          <div id="dash-tx" class="tx-list"></div>
+        </div>
+      </section>
+
+      <section id="view-transfer" class="view">
+        <div class="card form-card">
+          <div class="card-head"><h2>Send money</h2></div>
+          <form id="transfer-form" class="form">
+            <label>Saved beneficiary
+              <select id="transfer-beneficiary"><option value="">-- choose --</option></select>
+            </label>
+            <label>Receiver account number
+              <input type="text" id="transfer-acc" inputmode="numeric" maxlength="10" placeholder="10-digit account number" required />
+              <small id="transfer-lookup" class="hint"></small>
+            </label>
+            <div class="grid-2">
+              <label>Amount<input type="number" id="transfer-amount" min="0.01" step="0.01" placeholder="0.00" required /></label>
+              <label>Transaction PIN<input type="password" id="transfer-pin" inputmode="numeric" maxlength="4" placeholder="4-digit PIN" required /></label>
+            </div>
+            <label>Note (optional)<input type="text" id="transfer-desc" placeholder="What is this for?" /></label>
+            <button type="submit" class="btn primary">Send money</button>
+          </form>
+        </div>
+        <div class="card form-card">
+          <div class="card-head"><h2>Paystack test transfer</h2></div>
+          <p class="hint">Sandbox only. This sends a simulated NGN transfer through your Paystack test account and does not use your Bank Backy balance.</p>
+          <form id="paystack-test-transfer-form" class="form">
+            <label>Recipient account name
+              <input type="text" id="paystack-account-name" maxlength="100" required />
+            </label>
+            <div class="grid-2">
+              <label>Bank
+                <select id="paystack-bank" required><option value="">Loading test banks...</option></select>
+              </label>
+              <label>10-digit account number
+                <input type="text" id="paystack-account-number" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" required />
+              </label>
+            </div>
+            <div class="grid-2">
+              <label>Amount (NGN)<input type="number" id="paystack-amount" min="1" step="0.01" placeholder="100.00" required /></label>
+              <label>Note (optional)<input type="text" id="paystack-reason" maxlength="80" /></label>
+            </div>
+            <button type="submit" class="btn primary">Run test transfer</button>
+          </form>
+          <form id="paystack-otp-form" class="form hidden">
+            <input type="hidden" id="paystack-transfer-code" />
+            <p class="hint">Paystack requested an OTP. Enter the code sent to your Paystack account contact.</p>
+            <label>Paystack OTP<input type="text" id="paystack-otp" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" required /></label>
+            <button type="submit" class="btn primary">Finalize test transfer</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="view-cash" class="view">
+        <div class="cards">
+          <div class="card form-card">
+            <div class="card-head"><h2>Deposit</h2></div>
+            <form id="deposit-form" class="form">
+              <label>Amount<input type="number" id="deposit-amount" min="0.01" step="0.01" placeholder="0.00" required /></label>
+              <label>Note (optional)<input type="text" id="deposit-desc" placeholder="e.g. salary" /></label>
+              <button type="submit" class="btn success">Add funds</button>
+            </form>
+          </div>
+          <div class="card form-card">
+            <div class="card-head"><h2>Withdraw</h2></div>
+            <form id="withdraw-form" class="form">
+              <label>Amount<input type="number" id="withdraw-amount" min="0.01" step="0.01" placeholder="0.00" required /></label>
+              <label>Note (optional)<input type="text" id="withdraw-desc" placeholder="e.g. ATM" /></label>
+              <button type="submit" class="btn danger">Withdraw</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-transactions" class="view">
+        <div class="card">
+          <div class="card-head">
+            <h2>Transactions</h2>
+            <button class="link" id="tx-refresh">Refresh</button>
+          </div>
+          <div class="filters">
+            <select id="tx-type">
+              <option value="">All types</option>
+              <option value="deposit">Deposit</option>
+              <option value="withdrawal">Withdrawal</option>
+              <option value="transfer">Transfer</option>
+              <option value="admin_credit">Admin credit</option>
+              <option value="admin_debit">Admin debit</option>
+            </select>
+            <select id="tx-direction">
+              <option value="">All directions</option>
+              <option value="credit">Incoming</option>
+              <option value="debit">Outgoing</option>
+            </select>
+            <input type="date" id="tx-from" />
+            <input type="date" id="tx-to" />
+            <button class="btn small" id="tx-apply">Apply</button>
+          </div>
+          <div id="tx-table" class="table-wrap"></div>
+        </div>
+      </section>
+
+      <section id="view-beneficiaries" class="view">
+        <div class="cards">
+          <div class="card">
+            <div class="card-head"><h2>Add beneficiary</h2></div>
+            <form id="beneficiary-form" class="form">
+              <label>Account number<input type="text" id="ben-acc" inputmode="numeric" maxlength="10" placeholder="10-digit account number" required />
+                <small id="ben-lookup" class="hint"></small>
+              </label>
+              <label>Nickname (optional)<input type="text" id="ben-nick" placeholder="e.g. Landlord" /></label>
+              <button type="submit" class="btn primary">Save beneficiary</button>
+            </form>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Saved beneficiaries</h2></div>
+            <div id="beneficiary-list" class="list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-profile" class="view">
+        <div class="cards">
+          <div class="card">
+            <div class="card-head"><h2>Account details</h2></div>
+            <div id="profile-info" class="info-grid"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Contact information</h2></div>
+            <form id="profile-form" class="form">
+              <label>Email<input type="email" id="profile-email" placeholder="you@email.com" /></label>
+              <label>Phone<input type="text" id="profile-phone" inputmode="numeric" maxlength="11" placeholder="11-digit phone number" /></label>
+              <button type="submit" class="btn primary">Save changes</button>
+            </form>
+          </div>
+        </div>
+        <div class="cards">
+          <div class="card">
+            <div class="card-head"><h2>Change password</h2></div>
+            <form id="password-form" class="form">
+              <label>Current password<input type="password" id="pw-current" required /></label>
+              <label>New password<input type="password" id="pw-new" placeholder="min 6 characters" required /></label>
+              <button type="submit" class="btn primary">Update password</button>
+            </form>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Transaction PIN</h2></div>
+            <form id="pin-create-form" class="form">
+              <label>Create PIN<input type="password" id="pin-new" inputmode="numeric" maxlength="4" placeholder="4 digits" required /></label>
+              <button type="submit" class="btn primary">Create PIN</button>
+            </form>
+            <form id="pin-update-form" class="form hidden">
+              <label>Current PIN<input type="password" id="pin-current" inputmode="numeric" maxlength="4" placeholder="4 digits" required /></label>
+              <label>New PIN<input type="password" id="pin-update-new" inputmode="numeric" maxlength="4" placeholder="4 digits" required /></label>
+              <button type="submit" class="btn primary">Update PIN</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-admin" class="view">
+        <div class="card">
+          <div class="card-head"><h2>Adjust balance</h2></div>
+          <form id="admin-adjust-form" class="form">
+            <div class="grid-2">
+              <label>Account number<input type="text" id="admin-acc" inputmode="numeric" placeholder="10-digit account number" required /></label>
+              <label>Action
+                <select id="admin-direction">
+                  <option value="credit">Credit (add funds)</option>
+                  <option value="debit">Debit (remove funds)</option>
+                </select>
+              </label>
+            </div>
+            <label>Amount<input type="number" id="admin-amount" min="0.01" step="0.01" placeholder="0.00" required /></label>
+            <label>Note (optional)<input type="text" id="admin-desc" placeholder="Reason" /></label>
+            <button type="submit" class="btn primary">Apply adjustment</button>
+          </form>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Customers</h2><button class="link" id="admin-users-refresh">Refresh</button></div>
+          <div id="admin-users" class="table-wrap"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>All transactions</h2><button class="link" id="admin-tx-refresh">Refresh</button></div>
+          <div id="admin-tx" class="table-wrap"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
