@@ -1,7 +1,6 @@
 require("dotenv").config({ quiet: true });
 
 const express = require("express");
-const path = require("path");
 const cors = require("cors");
 
 const app = express();
@@ -23,9 +22,6 @@ app.use(["/user", "/api/user"], userRoutes);
 app.use(["/users", "/api/users"], userRoutes.usersRouter);
 app.use(["/role", "/api/role"], roleRoutes);
 app.use(["/admin", "/api/admin"], roleRoutes);
-
-// Static frontend
-app.use(express.static(path.join(__dirname, "..", "public")));
 
 // 404 for unknown API routes
 app.use(["/user", "/users", "/role", "/admin", "/api"], (req, res) => {

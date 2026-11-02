@@ -1,7 +1,7 @@
 # Bank Backy
 
-A small full-stack banking app: an Express API backed by **PostgreSQL**, plus a
-vanilla JS single-page frontend served from `public/`.
+A small full-stack banking app with an Express API backed by **PostgreSQL** and a
+vanilla JS single-page frontend. The API and frontend live in separate folders.
 
 ## Features
 
@@ -34,31 +34,39 @@ vanilla JS single-page frontend served from `public/`.
 
 ## Database (PostgreSQL)
 
-Schema lives in `src/db/schema.sql` (tables: `users`, `accounts`,
+Schema lives in `backend/src/db/schema.sql` (tables: `users`, `accounts`,
 `transactions`, `beneficiaries` with foreign keys, unique constraints and
 indexes).
 
 ## Getting started
 
-1. Install dependencies:
+The project has two folders: `backend/` contains the API, database code, and
+private environment settings; `frontend/` contains the browser app.
+
+1. Install backend dependencies:
    ```
-   npm install
+   cd backend && npm install
    ```
 2. Make sure PostgreSQL is running and create the database:
    ```
    createdb bank_backy
    ```
    (or `CREATE DATABASE bank_backy;` in psql)
-3. Copy `.env.example` to `.env` and set `DATABASE_URL` / `JWT_SECRET`. For Paystack transfer testing, set `PAYSTACK_SECRET_KEY` to your Paystack **test** secret key (`sk_test_...`). The Paystack transfer feature rejects live keys.
+3. From the project root, open `backend/.env` and set `DATABASE_URL` / `JWT_SECRET`. Put the Paystack key on the `PAYSTACK_SECRET_KEY=` line in **`backend/.env`**. Use the test secret key that starts with `sk_test_`; live keys are rejected. Never put the secret key in `frontend/`.
 4. Create tables and seed demo data:
    ```
-   npm run db:setup
+   cd backend && npm run db:setup
    ```
-5. Start the server:
+5. Start the API:
    ```
-   npm start        # or: npm run dev  (auto-restart)
+   cd backend && npm run dev      # or: npm start
    ```
-6. Open http://localhost:5700
+6. In another terminal opened at the project root, serve the frontend:
+   ```
+   python3 -m http.server 5500 --directory frontend
+   ```
+7. Open http://localhost:5500. The frontend API address is configured in
+   `frontend/config.js` (default: `http://localhost:5700`).
 
 > Registration requires an **11-digit phone number**. The account number is the
 > phone number without its first digit (e.g. `08012345678` &rarr; `8012345678`).
@@ -67,14 +75,16 @@ indexes).
 
 ## Scripts
 
+Run these commands from `backend/`.
+
 | Command            | Description                        |
 | ------------------ | ---------------------------------- |
-| `npm start`        | Run the server                     |
+| `npm start`        | Run the API                        |
 | `npm run dev`      | Run with file watching             |
-| `npm run db:migrate` | Apply `schema.sql`               |
+| `npm run db:migrate` | Apply `src/db/schema.sql`         |
 | `npm run db:seed`  | Seed demo users & history          |
 | `npm run db:setup` | Migrate + seed                     |
-| `npm test`         | Integration test (needs the DB up) |
+| `npm test`         | Integration tests (needs the DB up) |
 
 ## API reference
 
@@ -127,6 +137,8 @@ Every route is also available under an `/api` prefix (e.g. `/api/user/login`).
 
 ## Notes for later deployment
 
-- The frontend uses relative API paths. To host it separately (e.g. Vercel),
-  define `window.BANK_API_BASE` before `script.js` and point it at the Render URL.
-- On Render set `DATABASE_URL` (hosted Postgres) and `PGSSL=true`.
+- To host the frontend separately, set `window.BANK_API_BASE` in
+  `frontend/config.js` to the deployed backend URL.
+- Configure backend secrets such as `DATABASE_URL`, `JWT_SECRET`, and
+  `PAYSTACK_SECRET_KEY` only in the backend host's environment settings.
+- On Render set `DATABASE_URL` (hosted Postgres) and `PGSSL=true` for the backend.
